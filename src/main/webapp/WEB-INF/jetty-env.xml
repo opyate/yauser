@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+
+<Configure class="org.mortbay.jetty.webapp.WebAppContext">
+
+  <!-- an XADataSource                                                -->
+  <New id="yaus" class="org.mortbay.jetty.plus.naming.Resource">
+    <Arg>jdbc/lift</Arg>
+    <Arg>
+	     <New class="com.atomikos.jdbc.SimpleDataSourceBean">
+	     <Set name="xaDataSourceClassName">org.apache.derby.jdbc.EmbeddedXADataSource</Set>
+	     <Set name="xaDataSourceProperties">databaseName=yaus;createDatabase=create</Set>
+	     <Set name="UniqueResourceName">yaus</Set>
+     </New>
+    </Arg>
+   </New>
+
+</Configure>
+
