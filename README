@@ -17,5 +17,8 @@ It's a URL shortener written in Scala using the Lift web framework.
 * access control (at the moment anonymous users can add URLs, but you might
  want to use it in a business environment where only certain roles can add
  URLs)
+* Custom Hibernate sequence generator that generates IDs containing alphanumeric
+ characters (upper/lower case) because unsigned Long is quite limited.
+* clean up code (as I get to grips with Scala)
 * etc...
 
