@@ -8,7 +8,7 @@ import Helpers._
 import com.opyate.yauser.snippet._
 
 import _root_.net.liftweb.mapper.{DB, ConnectionManager, Schemifier, 
-   DefaultConnectionIdentifier, ConnectionIdentifier}
+   DefaultConnectionIdentifier, ConnectionIdentifier,By}
 import java.sql.{Connection, DriverManager}
 import com.opyate.yauser.model._
 
@@ -34,16 +34,27 @@ class Boot {
     val entries = Menu(Loc("Home", List("index"), "Home")) ::
       Menu(Loc("addURL", List("addURL"), "Shorten a URL")) ::
       Menu(Loc("u", List("u"), "Retrieve a URL", Hidden)) ::
+      Menu(Loc("404", List("404"), "404", Hidden)) ::
       Nil
     LiftRules.setSiteMap(SiteMap(entries:_*))
     //S.addAround(User.requestLoans)
     
     // dispatch
     LiftRules.dispatch.prepend {
-      case r @ Req("u" :: Nil, "", GetRequest) => () => OURL.retrieveURL(r);
-      case r @ Req("u" :: "id" :: Nil, "", GetRequest) => () => OURL.retrieveURL(r)
+      case r @ Req("u" :: id :: Nil, "", GetRequest) => () =>
+        val yurl = YauserURL.find(By(YauserURL.id, id.toLong))
+        println(yurl)
+        println(yurl.getClass)
+        if (yurl.isEmpty)
+          Full(RedirectResponse("/404"))
+        else
+          Full(RedirectResponse(yurl.elements.next.originalURL));
     }
-
+    
+    // Redirects
+	LiftRules.uriNotFound.prepend{
+	  case (req, _) => PermRedirectResponse("404", req)
+	}
   }
 }
 

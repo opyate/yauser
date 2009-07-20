@@ -1,0 +1,21 @@
+Yet Another URL Shortener ...er
+
+Author: Juan Uys <opyate@gmail.com>
+
+-------------------------------------------------------------------------------
+1. Introduction:
+
+It's a URL shortener written in Scala using the Lift web framework.
+
+-------------------------------------------------------------------------------
+2. Roadmap:
+
+* click-through count
+* add unique URLs
+* preview on mouse-over
+* unique visitors count
+* access control (at the moment anonymous users can add URLs, but you might
+ want to use it in a business environment where only certain roles can add
+ URLs)
+* etc...
+
