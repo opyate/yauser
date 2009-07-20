@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.opyate.yauser</groupId>
   <artifactId>yauser</artifactId>
-  <version>1.0</version>
+  <version>0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>yauser</name>
   <inceptionYear>2007</inceptionYear>
@@ -73,8 +73,12 @@
       <version>${scala.version}</version>
       <scope>test</scope>
     </dependency>
-  </dependencies>
-
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>10.4.2.0</version>
+      </dependency>
+    </dependencies>
   <build>
     <sourceDirectory>src/main/scala</sourceDirectory>
     <testSourceDirectory>src/test/scala</testSourceDirectory>
