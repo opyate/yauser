@@ -28,6 +28,8 @@ class YURL {
       // first check URL validity
       try {
         new URL(yx.open_!)
+        
+        // save the new url
         yurl.originalURL(yx.open_!).save
       } catch {
         case ex: MalformedURLException => S.error("Bad URL")
@@ -40,7 +42,7 @@ class YURL {
       else
         "Please add a valid URL."
     
-    val newYURL: URL = new URL("http://" + S.hostName + "/u/" + yurl.id.toString)
+    val newYURL: URL = new URL("http://" + S.hostName + "/u/" + yurl.urlId)
     
     bind("y", xhtml,
         "addURL" --> text("", v => yx(Full(v))) % ("size" -> "10") % ("id" -> "addURL"),

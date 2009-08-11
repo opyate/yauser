@@ -4,17 +4,31 @@
 <Configure class="org.mortbay.jetty.webapp.WebAppContext">
 
 <!--
-See
-http://docs.codehaus.org/display/JETTY/JNDI
+See http://docs.codehaus.org/display/JETTY/JNDI
+
+Example datasources below. You would need to configure a datasource specific 
+to your servlet container of choice.
 -->
 
-<New id="myds" class="org.mortbay.jetty.plus.naming.Resource">
-  <!--<Arg><Ref id="wac"/></Arg>-->
-  <Arg>jdbc/lift</Arg>
+<!--
+<New id="yauserDS" class="org.mortbay.jetty.plus.naming.Resource">
+  <Arg>jdbc/yauserDS</Arg>
   <Arg>
     <New class="org.apache.derby.jdbc.EmbeddedDataSource">
       <Set name="DatabaseName">yauser</Set>
       <Set name="createDatabase">create</Set>
+    </New>
+  </Arg>
+</New>
+-->
+
+<New id="yauserDS" class="org.mortbay.jetty.plus.naming.Resource">
+  <Arg>jdbc/yauserDS</Arg>
+  <Arg>
+    <New class="org.apache.commons.dbcp.BasicDataSource">
+      <Set name="driverClassName">com.mysql.jdbc.Driver</Set>
+      <Set name="url">jdbc:mysql://localhost:3306/yauser?createDatabaseIfNotExist=true</Set>
+      <Set name="username">root</Set>
     </New>
   </Arg>
 </New>

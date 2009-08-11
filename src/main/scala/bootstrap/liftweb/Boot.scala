@@ -20,7 +20,7 @@ import com.opyate.yauser.model._
 class Boot {
   def boot {
     // The default 'lift' JNDI name can be changed here:
-    DefaultConnectionIdentifier.jndiName = "jdbc/lift" 
+    DefaultConnectionIdentifier.jndiName = "jdbc/yauserDS" 
     
     // add the connection manager if there's not already a JNDI connection defined
     if (DB.jndiJdbcConnAvailable_?) DB.defineConnectionManager(DefaultConnectionIdentifier, DBVendor)
@@ -42,7 +42,7 @@ class Boot {
     // dispatch
     LiftRules.dispatch.prepend {
       case r @ Req("u" :: id :: Nil, "", GetRequest) => () =>
-        val yurl = YauserURL.find(By(YauserURL.id, id.toLong))
+        val yurl = YauserURL.find(By(YauserURL.urlId, id))
         println(yurl)
         println(yurl.getClass)
         if (yurl.isEmpty)
@@ -61,8 +61,11 @@ class Boot {
 object DBVendor extends ConnectionManager {
   def newConnection(name: ConnectionIdentifier): Box[Connection] = {
     try {
-      Class.forName("org.apache.derby.jdbc.EmbeddedDriver")
-      val dm = DriverManager.getConnection("jdbc:derby:yauser;create=true")
+//      Class.forName("org.apache.derby.jdbc.EmbeddedDriver")
+//      val dm = DriverManager.getConnection("jdbc:derby:yauser;create=true")
+      Class.forName("com.mysql.jdbc.Driver")
+      val dm = DriverManager.getConnection("jdbc:mysql://localhost:3306/yauser?createDatabaseIfNotExist=true&user=root")
+      
       Full(dm)
     } catch {
       case e : Exception => e.printStackTrace; Empty
