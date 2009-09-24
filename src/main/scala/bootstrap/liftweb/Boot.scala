@@ -23,7 +23,7 @@ class Boot {
     DefaultConnectionIdentifier.jndiName = "jdbc/yauserDS" 
     
     // add the connection manager if there's not already a JNDI connection defined
-    if (DB.jndiJdbcConnAvailable_?) DB.defineConnectionManager(DefaultConnectionIdentifier, DBVendor)
+    if (!DB.jndiJdbcConnAvailable_?) DB.defineConnectionManager(DefaultConnectionIdentifier, DBVendor)
     
     // where to search snippet
     LiftRules.addToPackages("com.opyate.yauser")

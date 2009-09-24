@@ -6,7 +6,7 @@
   <version>0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>yauser</name>
-  <inceptionYear>2007</inceptionYear>
+  <inceptionYear>2009</inceptionYear>
   <properties>
     <scala.version>2.7.3</scala.version>
   </properties>

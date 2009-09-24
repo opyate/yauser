@@ -22,3 +22,9 @@ It's a URL shortener written in Scala using the Lift web framework.
 * clean up code (as I get to grips with Scala)
 * etc...
 
+-------------------------------------------------------------------------------
+3. Building
+
+The root POM already points to the location where the Scala tools can be found.
+You need to run with Maven with -U the first time around to get the new
+plugins. 
