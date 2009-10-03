@@ -3,13 +3,36 @@
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 		<meta name="description" content="Yet Another URL Shortener ...er" />
 		<meta name="keywords" content="yauser, url, shorten" />
+		<link rel="stylesheet" type="text/css" href="/style/style.css" media="screen"/>
 		
 		<title>Yauser!</title>
 		<script id="jquery" src="/classpath/jquery.js" type="text/javascript"></script>
 	</head>
 	<body>
-		<lift:bind name="content" />
-		<lift:Menu.builder />
-		<lift:msgs/>
-	</body>
+		
+		
+    <div class="container">
+      
+      <div class="top">
+	    <a href="/"><span>Yauser</span></a>
+      </div>
+      
+      <div class="main">
+	    <lift:bind name="content" />
+      </div>
+      
+      <div class="navigation">
+		<!-- lift:Menu.builder / -->
+        <lift:snippet type="user_mgt:login_panel"/>
+		<lift:snippet type="error_report"/>
+      </div>
+      
+      <div class="clearer"><span>&nbsp;</span></div>
+      
+      <div class="footer">
+        Copyright &copy; 2009 opyate.com 
+      </div>
+
+    </div>
+  </body>
 </html>

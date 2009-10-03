@@ -27,17 +27,17 @@ class Boot {
     
     // where to search snippet
     LiftRules.addToPackages("com.opyate.yauser")
-    //Schemifier.schemify(true, Log.infoF _, User)
-    Schemifier.schemify(true, Log.infoF _, YauserURL)
+
+    Schemifier.schemify(true, Log.infoF _, User, YauserURL)
 
     // Build SiteMap
-    val entries = Menu(Loc("Home", List("index"), "Home")) ::
-      Menu(Loc("addURL", List("addURL"), "Shorten a URL")) ::
-      Menu(Loc("u", List("u"), "Retrieve a URL", Hidden)) ::
-      Menu(Loc("404", List("404"), "404", Hidden)) ::
-      Nil
-    LiftRules.setSiteMap(SiteMap(entries:_*))
-    //S.addAround(User.requestLoans)
+//    val entries = Menu(Loc("Home", List("index"), "Home")) ::
+//      Menu(Loc("addURL", List("addURL"), "Shorten a URL")) ::
+//      Menu(Loc("u", List("u"), "Retrieve a URL", Hidden)) ::
+//      Menu(Loc("new_acct", List("new_acct"), "New Account", Hidden)) ::
+//      Menu(Loc("404", List("404"), "404", Hidden)) ::
+//      Nil
+//    LiftRules.setSiteMap(SiteMap(entries:_*))
     
     // dispatch
     LiftRules.dispatch.prepend {
@@ -48,7 +48,7 @@ class Boot {
         if (yurl.isEmpty)
           Full(RedirectResponse("/404"))
         else
-          Full(RedirectResponse(yurl.elements.next.originalURL));
+          Full(RedirectResponse(yurl.open_!.originalURL));
     }
     
     // Redirects

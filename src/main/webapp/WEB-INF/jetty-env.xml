@@ -27,7 +27,7 @@ to your servlet container of choice.
   <Arg>
     <New class="org.apache.commons.dbcp.BasicDataSource">
       <Set name="driverClassName">com.mysql.jdbc.Driver</Set>
-      <Set name="url">jdbc:mysql://localhost:3306/yauser?createDatabaseIfNotExist=true</Set>
+      <Set name="url">jdbc:mysql://localhost:3306/yauser?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf8</Set>
       <Set name="username">root</Set>
     </New>
   </Arg>
