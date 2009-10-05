@@ -1,6 +1,13 @@
 <lift:surround with="default" at="content">
-  <div class="body">
-    <span>&nbsp;</span>
-  </div>
+  <lift:snippet type="yurl:show_last_added_urls" ajax="true">
+    <div class="item">
+      <div class="date"/>
+      <div class="content">
+	<h1><sk:originalURL/></h1>
+	<div class="body">
+	  <p>more variables go here</p>
+	</div>
+      </div>
+    </div>
+  </lift:snippet>
 </lift:surround>
-

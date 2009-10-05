@@ -1,12 +1,12 @@
 <lift:surround with="default" at="content">
     <div class="heading" id="title">Shorten a URL</div>
     
-    <lift:YURL.main form="POST">
+    <lift:Yurl.main form="POST">
         <label for="addURL">Paste your URL here...</label>
         <p><y:addURL/></p>
         <p><y:submit/></p>
         <p><y:response/></p>
         <p><y:newYURL/></p>
         <p><lift:snippet type="msgs"/></p>
-    </lift:YURL.main>
+    </lift:Yurl.main>
 </lift:surround>

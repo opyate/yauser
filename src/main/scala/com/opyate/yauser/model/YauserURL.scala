@@ -38,7 +38,9 @@ class YauserURL extends KeyedMapper[String, YauserURL] {
 	override def dirty_? = myDirty
 	override def dirty_?(b : Boolean) = { myDirty = b; super.dirty_?(b) }
 	override def fieldCreatorString(dbType: DriverType, colName: String): String = colName+" VARCHAR("+maxLen+") NOT NULL UNIQUE "
- }
+  }
+  
+  object addedBy extends MappedLongForeignKey(this, User)
 
 }
  

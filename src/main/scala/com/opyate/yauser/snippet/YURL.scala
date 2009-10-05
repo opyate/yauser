@@ -1,34 +1,34 @@
 package com.opyate.yauser.snippet
 
-import com.opyate.yauser.model.YauserURL
+import com.opyate.yauser.model._
 import scala.xml.NodeSeq
 import net.liftweb.http.S._
 import net.liftweb.http.S  
 import net.liftweb.http.SHtml._
 import net.liftweb.http.RequestVar
+import net.liftweb.util._
 import net.liftweb.util.Helpers._
 import net.liftweb.util.Full
 import net.liftweb.http.js.JsCmds.{Alert, Noop}
 import java.net.{URL,MalformedURLException}
 import _root_.scala.xml._
+import _root_.net.liftweb.mapper._
 
 /**
  * @author Juan Uys <opyate@gmail.com>
  * 
  * Snippet that deals with URL-related actions (showing/saving/etc)
  */
-class YURL {
+class Yurl {
   object yx extends RequestVar(Full("")) // default is empty string
   
   def main(xhtml: NodeSeq): NodeSeq = {
     if (!logged_in_?) {S.error("Log in before adding a new URL."); S.redirectTo("/")}
     else {
-      val invokedAs = S.invokedAs
-      println("Invoked by: " + invokedAs)
       def doNothing() = {}
     
-      if (yx.isEmpty) {
-        // user didn't submit anything
+      if (yx.isEmpty || yx.open_!.length == 0) {
+        
         bind("y", xhtml,
           "addURL" --> text("", v => yx(Full(v))) % ("size" -> "10") % ("id" -> "addURL"),
           "response" --> "You didn't submit anything",
@@ -37,6 +37,7 @@ class YURL {
         )
       } else {
         val newURL = yx.open_!
+        Log.info("URL submitted: " + newURL)
         // first check URL validity
         try {
           new URL(newURL)
@@ -49,7 +50,9 @@ class YURL {
         val yurl: YauserURL = YauserURL.create
         println("Saving new URL: " + newURL + " with ID: " + yurl.urlId)
 	      // Cat.find("foo") openOr Cat.create.mac("foo")
-	      yurl.originalURL(newURL).save
+        val u = User.find(By(User.name, S.get("user_name").open_!))
+        Log.info("User currently logged in : " + u.open_!.email)
+	      yurl.originalURL(newURL).addedBy(u).save
 	      println("Was it really saved: " + yurl.saved_?)
 	 
 	      val message: String =
@@ -68,6 +71,25 @@ class YURL {
 	          "submit" --> submit("AddURL", doNothing)
 	        )
 	    }
+    }
+  }
+  
+  def show_last_added_urls(xhtml: Group): NodeSeq = {
+    if (logged_in_?) {
+      Helpers.bind("sk", xhtml,
+          "originalURL" -> <span>Latest URLs:<ul>{
+            YauserURL.findAll(
+              By(YauserURL.addedBy, User.find(By(User.name, S.get("user_name").open_!))),
+              StartAt(0),
+              MaxRows(10)
+            ) 
+            .flatMap {
+              u =>
+              <li>{u.originalURL}</li>
+            }
+          }</ul></span>)
+    } else {
+      <span>Log in to see your URLs</span>
     }
   }
   
