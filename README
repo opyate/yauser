@@ -21,6 +21,8 @@ It's a URL shortener written in Scala using the Lift web framework.
  characters (upper/lower case) because unsigned Long is quite limited.
 * clean up code (as I get to grips with Scala)
 * etc...
+* ZeroClipBoard support:
+  http://code.google.com/p/zeroclipboard/wiki/Instructions
 
 -------------------------------------------------------------------------------
 3. Building

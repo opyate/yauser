@@ -41,14 +41,8 @@ class Boot {
     
     // dispatch
     LiftRules.dispatch.prepend {
-      case r @ Req("u" :: id :: Nil, "", GetRequest) => () =>
-        val yurl = YauserURL.find(By(YauserURL.urlId, id))
-        println(yurl)
-        println(yurl.getClass)
-        if (yurl.isEmpty)
-          Full(RedirectResponse("/404"))
-        else
-          Full(RedirectResponse(yurl.open_!.originalURL));
+      case r @ Req("u" :: id :: Nil, "", GetRequest) => () => Yurl.clickU(id)
+      case r @ Req("i" :: id :: Nil, "", GetRequest) => () => Yurl.clickI(id)
     }
     
     // Redirects

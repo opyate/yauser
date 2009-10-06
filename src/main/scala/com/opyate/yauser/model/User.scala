@@ -18,9 +18,9 @@ object User extends User with KeyedMetaMapper[Long, User] {
 }
 
 /**
- * An O-R mapped "User" class that includes first name, last name, password and we add a "Personal Essay" to it
+ * An O-R mapped "User" class that includes first name, last name, password
  */
-class User extends ProtoUser[User] {
+class User extends ProtoUser[User] with OneToMany[Long, User] {
   def getSingleton = User // what's the "meta" server
 
   def wholeName = firstName+" "+lastName
@@ -38,4 +38,8 @@ class User extends ProtoUser[User] {
 
     override def dbIndexed_? = true
   }
+  
+  object urlIds
+    extends MappedOneToMany(YauserURL, YauserURL.addedBy, OrderBy(YauserURL.sort, Ascending))
+    with Owned[YauserURL] with Cascade[YauserURL]
 }

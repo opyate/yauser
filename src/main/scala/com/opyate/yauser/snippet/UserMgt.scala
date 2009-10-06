@@ -11,9 +11,11 @@ import _root_.net.liftweb.util._
 
 class UserMgt {
   def login_panel(xhtml: Group): NodeSeq = {
-    <h1>acct</h1> ++
+    <h1>Account</h1> ++
     (if (logged_in_?) {
-      <ul><li><a href="/logout">log out</a></li></ul>
+      <ul><li><a href="/logout">Log out</a></li></ul>
+      <ul><li><a href="/addURL">Add URL</a></li></ul>
+      <ul><li><a href="/">Home</a></li></ul>
     } else {
         var username = ""
         var pwd = ""
@@ -25,9 +27,11 @@ class UserMgt {
         }
       <form method="post" action={S.uri}>
       <table>
-      <tr><td>name:</td><td>{text("", username=_)}</td></tr>
-      <tr><td>pwd:</td><td>{password("", pwd=_)}</td></tr>
-      <tr><td><a href="/new_acct">new acct</a></td><td>{submit("login", testPwd _)}</td></tr>
+      <tr><td>Username:</td><td>{text("", username=_)}</td></tr>
+      <tr><td>Password:</td><td>{password("", pwd=_)}</td></tr>
+      <tr>
+        <td>&nbsp;</td>
+        <td>{submit("login", testPwd _)}</td></tr>
       </table>
       </form>
     })
@@ -47,7 +51,7 @@ class UserMgt {
           if (issues.isEmpty) {
             theUser.save
             S.set("user_name", theUser.name)
-            S.notice("welcome to skittr")
+            S.notice("Welcome to Yauser!")
             redirectTo("/")
           }
 

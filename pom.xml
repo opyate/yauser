@@ -3,13 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.opyate.yauser</groupId>
   <artifactId>yauser</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.2-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>yauser</name>
   <inceptionYear>2009</inceptionYear>
   <properties>
     <scala.version>2.7.3</scala.version>
-    <lift.version>1.1-M5</lift.version>
+    <lift.version>1.1-SNAPSHOT</lift.version>
   </properties>
 
   <repositories>

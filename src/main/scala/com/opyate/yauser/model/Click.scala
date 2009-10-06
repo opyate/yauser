@@ -9,13 +9,18 @@ import Helpers._
  
 import _root_.java.util.Date
  
-class Click extends LongKeyedMapper[Click] with IdPK with TimeStamp[Click] {
+class Click extends LongKeyedMapper[Click] with IdPK with TimeStamp[Click] 
+  with Ordered[Click] with OneToMany[Long, Click] {
   def getSingleton = Click
   
-  object yauserurl extends MappedStringForeignKey(this, YauserURL, 6) {
-    override def dbIndexed_? = true
-    override def dbColumnName = "urlid"
-    override def fieldCreatorString(dbType: DriverType, colName: String): String = colName+" VARCHAR("+maxLen+") NOT NULL "
+  object yauserurl extends MappedLongForeignKey(this, YauserURL)
+  
+  object sort extends MappedInt(this)    
+
+  def compare(that: Click) = this.sort.is - that.sort.is
+  
+  object referer extends MappedString(this, 32) {
+    override def defaultValue = S.request.open_!.remoteAddr
   }
 }
 
