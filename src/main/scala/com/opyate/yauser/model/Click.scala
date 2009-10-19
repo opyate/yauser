@@ -19,7 +19,7 @@ class Click extends LongKeyedMapper[Click] with IdPK with TimeStamp[Click]
 
   def compare(that: Click) = this.sort.is - that.sort.is
   
-  object referer extends MappedString(this, 32) {
+  object referrer extends MappedString(this, 32) {
     override def defaultValue = S.request.open_!.remoteAddr
   }
 }

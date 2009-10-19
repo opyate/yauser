@@ -11,17 +11,22 @@ import _root_.net.liftweb.util._
 
 class UserMgt {
   def login_panel(xhtml: Group): NodeSeq = {
-    <h1>Account</h1> ++
+    <br/> ++
     (if (logged_in_?) {
-      <ul><li><a href="/logout">Log out</a></li></ul>
-      <ul><li><a href="/addURL">Add URL</a></li></ul>
-      <ul><li><a href="/">Home</a></li></ul>
+      <div class="tabs">
+        <ul>
+          <li><a href="/logout">Log out</a></li>
+          <li><a href="/addURL">Add URL</a></li>
+          <li><a href="/">Home</a></li>
+        </ul>
+      </div>
     } else {
         var username = ""
         var pwd = ""
         def testPwd {
            User.find(By(User.name, username)).filter(_.password.match_?(pwd)).map{
              u => S.set("user_name", u.name)
+             Log.info("Logged in: " + u.email)
              S.redirectTo("/")
            }.openOr(S.error("Invalid Username/Password"))
         }
@@ -52,6 +57,7 @@ class UserMgt {
             theUser.save
             S.set("user_name", theUser.name)
             S.notice("Welcome to Yauser!")
+            Log.info("New account created: " + theUser.email)
             redirectTo("/")
           }
 

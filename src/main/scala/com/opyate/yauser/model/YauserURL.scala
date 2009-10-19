@@ -48,7 +48,8 @@ class YauserURL extends LongKeyedMapper[YauserURL] with IdPK with TimeStamp[Yaus
   }
   
   object addedBy extends MappedLongForeignKey(this, User)
-    with LongMappedForeignMapper[YauserURL, User]  
+    with LongMappedForeignMapper[YauserURL, User]
+    //with LongMappedMapper[YauserURL, User]
 
   object sort extends MappedInt(this)    
 

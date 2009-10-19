@@ -1,172 +1,29 @@
-/*#############################################################
-Name: Bitter Sweet
-Date: 2006-10-02
-Description: Lime flavoured template with two columns.
-Author: Viktor Persson
-URL: http://templates.arcsin.se
+.hot {
+	background:#ff7a60;
+}
 
-Feel free to use and modify but please provide credits.
-#############################################################*/
+.inline-list {
+	margin: 2em;
+	width: 80%;
+	padding: 5px;
+}
 
-/* standard elements */
-* {
+.inline-list p {
+	display: inline;
+}
+
+.inline-list ul, .inline-list li {
+	display: inline;
 	margin: 0;
 	padding: 0;
 }
-a {color: #682;}
-a:hover {color: #9A6;}
-body {
-	background: #5F8000 url(../images/bg.gif) repeat-y center top;
-	color: #333;
-	font: normal 62.5% "Lucida Sans Unicode",sans-serif;
-}
-input {
-	color: #555;
-	font: normal 1.1em "Lucida Sans Unicode",sans-serif;
-}
-p,cite,code,ul {
-	font-size: 1.2em;
-	padding-bottom: 1.2em;
-}
-ul {margin-left: 1.2em;}
-li {list-style-image: url(../images/li.gif);}
-h1 {font-size: 1.4em;}
-blockquote {
-	background: #FFF;
-	border-bottom: 1px solid #EEE;
-	border-top: 1px solid #EEE;
-	color: #333;
-	display: block;
-	font-size: 0.9em;
-	margin-bottom: 1.2em;
-	padding: 6px 12px;
-}
-blockquote p {padding: 3px 0;}
-h1,h2,h3 {color: #654;}
-
-/* misc */
-.clearer {clear: both;}
-
-/* structure */
-.container {
-	background: url(../images/bgcontainer.gif) repeat-y;
-	margin: 0 auto;
-	width: 702px;
-}
-
-/* top */
-.top {
-	background: #567300;
-	font: normal 2.4em Verdana,sans-serif;
-	height: 60px;
-	margin: 0 auto;
-	width: 630px;
-}
-.top a {
-	color: #FFF;
-	display: block;
-	line-height: 60px;
-	text-decoration: none;
-	width: 100%;
-}
-.top span {padding-left: 24px;}
-.top a:hover {
-	background: #688B00;
-	color: #FFF;
-}
-
-/* header */
-.header {
-	background: url(../images/header.jpg) no-repeat;
-	height: 180px;
-	margin: 0 auto;
-	width: 630px;
-}
-
-/* item */
-.item {clear: both;}
-.item .date {
-	background: url(../images/bgdate.gif) no-repeat;
-	color: #FDD;
-	float: left;
-	height: 40px;
-	text-align: center;
-	width: 36px;
-}
-.item .date div {padding-top: 4px;}
-.item .date span {font: normal 1.6em serif;}
-.item .content {
-	float: left;
-	width: 420px;
-}
-.item h1 {
-	background: #567300;
-	color: #FFF;
-	line-height: 40px;
-	padding-left: 16px;
-}
-.item .body {padding: 12px 18px;}
-
-/* main */
-.main {float: left;}
-
-/* navigation */
-.navigation {
-	float: left;
-	margin-left: 1px;
-	width: 208px;
-}
-.navigation h1 {
-	background: #81AC00;
-	color: #FFF;
-	font-size: 1.3em;
-	line-height: 40px;
-	padding-left: 12px;
-}
-.navigation ul {margin: 0; padding: 0;}
-.navigation li {
-	border-bottom: 1px solid #D5E8AD;
-	list-style: none;
-}
-
-.navigation table tr td input {
-  width: 125px;
-}
-
-.navigation li a {
-	background: #E8F6BF url(../images/bgnavigation.gif) repeat-x;	
-	color: #553;
-	display: block;
-	padding: 8px 4px 8px 12px;
-	text-decoration: none;
-}
-.navigation li a:hover {
-	background: #F0FFC6;
-	color: #553;
-}
-
-/* footer */
-.footer {
-	background: url(../images/bgfooter.gif) repeat-x;
-	color: #FFF;
-	font-size: 1.1em;
-	line-height: 40px;
-	margin: 0 auto;
-	text-align: center;
-	width: 626px;
-}
-.footer a {color: #FFF;}
-.footer a:hover {color: #FAFCB0;}
-
 
 /* TABLES */
 /* 
 	Blue Dream
 	Written by Teylor Feliz  http://www.admixweb.com
 */
-
-
-table { background:#D3E4E5;
+table, dl { background:#D3E4E5;
  border:1px solid gray;
  border-collapse:collapse;
  color:#fff;
@@ -175,12 +32,9 @@ table { background:#D3E4E5;
 caption { border:1px solid #5C443A;
  color:#5C443A;
  font-weight:bold;
- letter-spacing:20px;
- padding:6px 4px 8px 0px;
- text-align:center;
- text-transform:uppercase;
+ padding:6px 4px 8px 4px;
 }
-td, th { color:#363636;
+td, th, dt, dd { color:#363636;
  padding:.4em;
 }
 tr { border:1px dotted gray;
@@ -195,7 +49,6 @@ tbody td a { color:#363636;
  text-decoration:none;
 }
 tbody td a:visited { color:gray;
- text-decoration:line-through;
 }
 tbody td a:hover { text-decoration:underline;
 }
@@ -227,4 +80,72 @@ tfoot td { background:#5C443A;
 tbody tr:hover { background:#99BCBF;
  border:1px solid #03476F;
  color:#000000;
+}
+
+
+
+
+
+/* -----------------------------------------------------------------------
+
+
+ Tabs Plugin 0.1 for the Blueprint CSS Framework
+ http://blueprintcss.org
+
+   * Copyright (c) 2008-Present. Refer to the main Blueprint license.
+   * See README for instructions on how to use this plugin.
+   * For credits and origins, see AUTHORS.
+
+----------------------------------------------------------------------- */
+
+.tabs { 
+	border-bottom:1px solid #ccc;
+	height:1%; /* fixing IE 6 */
+	margin:0 0 .75em 0;
+	min-height:auto;
+	overflow:auto;
+}
+.tabs li {
+  border:1px solid #ccc;
+  border-bottom:none;
+  float:left;
+  line-height:1.5; 
+  list-style-type:none;
+  margin:0 .25em 0 0;
+  padding:0;
+}
+.tabs li a { 
+	background:#ddd;
+  border:1px solid #eee;
+  border-bottom:none;
+  color:#222;
+  cursor:pointer;
+  display:block;
+  float:left;
+  font-weight:bold;
+  padding:.15em .33em .25em .33em;
+}
+.tabs li a.selected { 
+  background:#666;
+  border:1px solid #666;
+  border-bottom:none;
+  color:#fff;
+  cursor:default;
+}
+.tabs li a, .tabs li a:focus, .tabs li a:hover { 
+  text-decoration:none;
+}
+.tabs li a:focus, .tabs li a:hover { 
+  color:#555;
+  outline:none;
+}
+.tabs li a.selected:focus, .tabs li a.selected:hover { 
+  color:#fafafa;
+}	
+.tabs li.label { 
+	border:none;
+	font-weight:bold;
+	line-height:1.5; 
+	margin-right:.5em; 
+	padding:.25em .33em .25em .33em;
 }

@@ -1,13 +1,69 @@
 <lift:surround with="default" at="content">
   <lift:snippet type="yurl:stats">
-    <div class="item">
-      <div class="date"/>
-      <div class="content">
-	<h1><sk:username/></h1>
-	<div class="body">
-	  <p><sk:content/></p>
-	</div>
-      </div>
+    <h2><y:header /></h2>
+	<y:content>
+	<main:content>
+	
+	<div class="span-12">
+	  <dl class="hot">
+		<dt>All clicks</dt>
+		<dd><y:all_clicks /></dd>
+      </dl>
     </div>
+    
+    <div class="span-12 last">  
+      <dl class="hot">
+		<dt>Unique clicks</dt>
+		<dd><y:unique_clicks /></dd>
+      </dl>
+    </div>
+      
+    <div class="span-3">
+      <dl>
+		<dt>ID</dt>
+		<dd><y:id /></dd>
+      </dl>
+    </div>
+      
+    <div class="span-3">
+      <dl>
+		<dt>Token</dt>
+		<dd><y:url_id /></dd>
+      </dl>
+    </div>
+	
+	<div class="span-18 last">
+      <dl>
+		<dt>URL</dt>
+		<dd><y:original_url /></dd>
+      </dl>
+    </div>
+    
+    <div class="span-24">  
+      <dl>
+		<dt>Date added</dt>
+		<dd><y:date_added /></dd>
+      </dl>
+	</div>
+	
+    <span style="display: inline;"><y:previous_link /> | <y:next_link /></span>
+    
+    <table>
+      <caption>Stats</caption>
+      <thead>
+      <tr>
+        <th>Referrer</th>
+        <th>Clicks</th>
+      </tr>
+      </thead>
+      <tbody>
+        <y:stats />
+      </tbody>
+      </table>
+
+    <span style="display: inline;"><y:previous_link /> | <y:next_link /></span>
+	
+	</main:content>
+	</y:content>
   </lift:snippet>
 </lift:surround>

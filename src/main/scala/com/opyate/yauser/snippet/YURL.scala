@@ -13,28 +13,39 @@ import net.liftweb.http.js.JsCmds.{Alert, Noop}
 import java.net.{URL,MalformedURLException}
 import _root_.scala.xml._
 import _root_.net.liftweb.mapper._
+import view._
 
 /**
  * @author Juan Uys <opyate@gmail.com>
  * 
  * Snippet that deals with URL-related actions (showing/saving/etc)
+ * Some ideas from:
+ * http://www.ibm.com/developerworks/opensource/library/os-ag-lift/
  */
 class Yurl {
+  
+  val pageLimit = 25 // global pagination size
+  object pageNumber extends RequestVar[Int](S.param("p").map(_.toInt) openOr 0)
   object yx extends RequestVar(Full("")) // default is empty string
   
+  /**
+   * This method handles the addition of a new URL.
+   */
   def main(xhtml: NodeSeq): NodeSeq = {
-    if (!logged_in_?) {S.error("Log in before adding a new URL."); S.redirectTo("/")}
-    else {
+    if (!logged_in_?) {
+      S.error("Log in before adding a new URL.")
+      S.redirectTo("/")
+    } else {
       def doNothing() = {}
     
       if (yx.isEmpty || yx.open_!.length == 0) {
         
         bind("y", xhtml,
-          "addURL" --> text("", v => yx(Full(v))) % ("size" -> "50") % ("id" -> "addURL"),
-          "response" --> "",
-          "u_URL" --> "" ,
-          "i_URL" --> "" ,
-          "submit" --> submit("AddURL", doNothing)
+          "addURL" -> text("", v => yx(Full(v))) % ("size" -> "50") % ("id" -> "addURL"),
+          "response" -> "",
+          "u_url" -> "" ,
+          "i_url" -> "" ,
+          "submit" -> submit("Shorten!", doNothing)
         )
       } else {
         val newURL = yx.open_!
@@ -49,17 +60,21 @@ class Yurl {
       
         // save the new url
         val yurl: YauserURL = YauserURL.create
-        println("Saving new URL: " + newURL + " with ID: " + yurl.urlId)
-	      // Cat.find("foo") openOr Cat.create.mac("foo")
+        
         val u = User.find(By(User.name, S.get("user_name").open_!))
-        Log.info("User currently logged in : " + u.open_!.email)
-	    yurl.originalURL(newURL).addedBy(u).xdatetime(new _root_.java.util.Date).save
-	    println("Was it really saved: " + yurl.saved_?)
+
+        try {
+	      yurl.originalURL(newURL).addedBy(u).xdatetime(new _root_.java.util.Date).save
+        } catch {
+          case e: com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException => {S.error("This URL already exists.")}
+          case u => {S.error("Unknown error: " + u.getMessage)}
+        }
 
 	    val message: String =
-	    if (yurl.saved_?)
+	    if (yurl.saved_?) {
+	      Log.info("Saved new URL: " + newURL + ", id=" + yurl.id + ", token=" + yurl.urlId)
 	      "URL saved."
-        else
+	    } else
 	      "URL was not saved..."
 
 	    // TODO handle port numbers
@@ -67,136 +82,144 @@ class Yurl {
         val i_URL: URL = new URL("http://" + S.hostName + "/i/" + yurl.id)
 
 	    bind("y", xhtml,
-	        "addURL" --> text("", v => yx(Full(v))) % ("size" -> "50") % ("id" -> "addURL"),
-	        "response" --> message,
-	        "u_url" --> { if (yurl.saved_?) "URL by token: " + u_URL.toString else "" },
-            "i_url" --> { if (yurl.saved_?) "URL by ID: " + i_URL.toString else "" },
-	        "submit" --> submit("AddURL", doNothing)
+	        "addURL" -> text("", v => yx(Full(v))) % ("size" -> "50") % ("id" -> "addURL"),
+	        "response" -> message,
+	        "u_url" -> { if (yurl.saved_?) "URL by token: " + u_URL.toString else "" },
+            "i_url" -> { if (yurl.saved_?) "URL by ID: " + i_URL.toString else "" },
+	        "submit" -> submit("AddURL", doNothing)
 	      )
 	  }
     }
   }
   
+  /**
+   * Shows the last few URLs added by the currently logged-in user.
+   */
   def show_last_added_urls(xhtml: Group): NodeSeq = {
     if (logged_in_?) {
-      Helpers.bind("sk", xhtml,
-          "username" -> S.get("user_name").open_!,
-          "content" ->
-            <table>
-              <caption>URLs</caption>
-              <thead>
-              <tr>
-                <th>ID</th>
-                <th>TOKEN</th>
-                <th>URL</th>
-                <th>Stats</th>
-              </tr>
-              </thead>
-              <tbody>
-            {
-            YauserURL.findAll(
-              By(YauserURL.addedBy, User.find(By(User.name, S.get("user_name").open_!))),
-              StartAt(0),
-              MaxRows(10)
+      val all = YauserURL.findAll(
+        By(YauserURL.addedBy, User.find(By(User.name, S.get("user_name").open_!))),
+        StartAt(pageNumber.is * pageLimit),
+        MaxRows(pageLimit)
+      )
+      
+      bind("y", xhtml,
+        "header" -> Text(S.get("user_name").open_! + "'s URLs"),
+        "content" -> bind("y", chooseTemplate("main","content", xhtml),
+          "next_link" -> <a href={"/?p=" + (pageNumber.is + 1)}>next</a>,
+          "previous_link" -> <a href={"/?p=" + (if (pageNumber.is > 0) pageNumber.is - 1 else 0)}>previous</a>,
+          "urls" -> all.flatMap { u => 
+            bind("u", chooseTemplate("url","entries", xhtml),
+              "id" -> u.id,
+              "url_id" -> u.urlId,
+              "original_url" -> u.originalURL,
+              "xdatetime" -> u.xdatetime,
+              "stats_link" -> <a href={"/stats?id=" + u.id + "&p=0"}>stats</a>
             )
-            .flatMap {
-              u =>
-              <tr>
-                <td>{u.id}</td>
-                <td>{u.urlId}</td>
-                <td>{u.originalURL}</td>
-                <td><a href={"/stats?id=" + u.id}>stats</a></td>
-              </tr>
-            }
           }
-            </tbody>
-          </table>)
+        )
+      )
     } else {
-      Helpers.bind("sk", xhtml,
-          "username" -> "Not logged in.",
-          "content" -> <span>Please log in to continue...</span>)
+      bind("y", xhtml,
+        "header" -> "Not logged in.",
+        "content" -> "Please log in to see your content."
+      )
     }
   }
   
+  /**
+   * Shows the stats for a specified URL.
+   */
   def stats(xhtml: Group): NodeSeq = {
     if (logged_in_?) {
       val yurl = YauserURL.findAll(
         By(YauserURL.id, S.param("id").open_!.toLong)
       ).head
       
-      println("Reading stats for URL: " + yurl.id)
+      Log.debug("Reading stats for URL: " + yurl.id)
       
-//      val clicks = Click.findAll(
-//        By(Click.yauserurl, yurl.id)
-//      )
-      
-      // I don't know if there's support for Count, and GroupBy yet.
-      // This returns (List[String], List[List[String]])
-      // e.g.
-      // (List("someString", "someInt"]),
-      // List(
-      //      List("str1","1"),
-      //      List("str2","2"),
-      //      List("str3","3"))
-      // )
-      val resultSet = DB.runQuery(
-        "select referer, count(referer) as cnt " +
-        " from clicks where yauserurl = ? group by referer order by cnt",
+      // per-referrer stats, paginated
+      val clicksPerReferrer = DB.runQuery(
+        "select referrer, count(referrer) as cnt " +
+        " from clicks where yauserurl = ? group by referrer order by cnt desc limit " +
+          (pageNumber.is * pageLimit) + ", " + pageLimit,
         List(yurl.id.toLong))
       
-      Helpers.bind("sk", xhtml,
-          "username" -> S.get("user_name").open_!,
-          "content" ->
-            <table>
-              <caption>URL</caption>
-              <thead>
-                <tr>
-              	  <th>ID</th>
-                  <th>TOKEN</th>
-                  <th>URL</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{yurl.id}</td>
-                  <td>{yurl.urlId}</td>
-                  <td>{yurl.originalURL}</td>
-                </tr>
-              </tbody>
-            </table>
-            
-            <br/>
-            
-            <table>
-              <caption>Stats</caption>
-              <thead>
-                <tr>
-              	  <th>Referer</th>
-                  <th>Clicks</th>
-                </tr>
-              </thead>
-              <tbody>
-              <tr>
-              {
-                // we know what we queried, thus are only interested in _2 (_1 are the column names)
-                for (
-                  val rows <- resultSet._2
+      val clicksPerReferrerCount: NodeSeq = for (
+                  val rows <- clicksPerReferrer._2
                 ) yield {
-                  for (
-                    val row <- rows
-                  ) yield {
-                    <td>{row}</td>
+                  <tr>
+                  {
+                    for (
+                      val row <- rows
+                    ) yield {
+                      <td>{row}</td>
+                    }
                   }
+                  </tr>
                 }
-              }
-              </tr>
-              </tbody>
-            </table>
-          )
+      
+      // count of all clicks
+      val allClicks = DB.runQuery(
+        "select count(referrer) as cnt " +
+        " from clicks where yauserurl = ? order by cnt",
+        List(yurl.id.toLong))
+      
+      val allClicksCount: NodeSeq = for (
+                  val rows <- allClicks._2
+                ) yield {
+                  <span>
+                  {
+                    for (
+                      val row <- rows
+                    ) yield {
+                      {row}
+                    }
+                  }
+                  </span>
+                }
+      
+      // count of unique referrers
+      val uniqueReferrers = DB.runQuery(
+        "select count(distinct(referrer)) as cnt " +
+        " from clicks where yauserurl = ?",
+        List(yurl.id.toLong))
+
+//      val uniqueReferrersCount: Int = for (val rows <- uniqueReferrers._2) yield {{
+//        for (val row <- rows) yield { row }}}
+      val uniqueReferrersCount: NodeSeq = for (
+                  val rows <- uniqueReferrers._2
+                ) yield {
+                  <span>
+                  {
+                    for (
+                      val row <- rows
+                    ) yield {
+                      {row}
+                    }
+                  }
+                  </span>
+                }
+      
+      bind("y", xhtml,
+        "header" -> Text("Stats for " + yurl.urlId),
+        "content" -> bind("y", chooseTemplate("main","content", xhtml),
+          "next_link" -> <a href={"/stats?id=" + yurl.id + "&p=" + (pageNumber.is + 1)}>next</a>,
+          "previous_link" -> <a href={"/stats?id=" + yurl.id + "&p=" + (if (pageNumber.is > 0) pageNumber.is - 1 else 0)}>previous</a>,
+          "id" -> yurl.id,
+          "url_id" -> yurl.urlId,
+          "original_url" -> <a href={""+yurl.originalURL}>{yurl.originalURL}</a>,
+          "date_added" -> yurl.xdatetime,
+          "all_clicks" -> allClicksCount,
+          "unique_clicks" -> uniqueReferrersCount,
+          "stats" -> clicksPerReferrerCount
+        )
+      )
     } else {
-      Helpers.bind("sk", xhtml,
-          "username" -> "Not logged in.",
-          "content" -> <span>Please log in to continue...</span>)
+      bind("y", xhtml,
+        "header" -> "Not logged in.",
+        "content" -> "Please log in to see your content."
+      )
     }
   }
   
@@ -208,12 +231,17 @@ class Yurl {
 }
 
 object Yurl {
+  object pageSize extends RequestVar[Long](S.param("pageSize").map(_.toLong) openOr 25L)
+  
+  /**
+   * Click-through counter.
+   */
   private def click(yurl: Box[YauserURL]): Full[RedirectResponse] = {
     if (yurl.isEmpty)
       Full(RedirectResponse("/404"))
     else {
       // save metrics, then redirect
-      println("referer: " + S.request.open_!.remoteAddr)
+      Log.info("Click tracker: token: " + yurl.open_!.urlId + ", referrer: " + S.request.open_!.remoteAddr)
       Click.create.yauserurl(yurl).xdatetime(new _root_.java.util.Date).save
       Full(RedirectResponse(yurl.open_!.originalURL));
     }
